@@ -1,0 +1,125 @@
+.sidebar {
+  width: 16rem;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  @media (max-width: 1024px) {
+    width: 12rem;
+    height: 100vh;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #282828;
+    padding: 10px;
+    height: auto;
+
+    .nav {
+      display: flex;
+      overflow-x: auto;
+      padding-bottom: 10px;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  .logo {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    @media (max-width: 1024px) {
+    }
+
+    @media (max-width: 768px) {
+      margin-bottom: 15px;
+
+      img {
+        width: 35px;
+        height: 35px;
+      }
+      h3 {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .nav-link {
+    color: #b3b3b3;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+    white-space: nowrap;
+
+    &:hover,
+    &.active {
+      color: #fff;
+    }
+
+    svg {
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      padding: 8px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .profile-section {
+    margin-top: auto;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .profile-image {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        font-size: 20px;
+        color: #b3b3b3;
+      }
+    }
+
+    .profile-info {
+      h4 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #fff;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #b3b3b3;
+      }
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+}

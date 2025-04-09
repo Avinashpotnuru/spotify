@@ -1,0 +1,56 @@
+/* eslint-disable react/prop-types */
+import { Nav } from "react-bootstrap";
+import { Link, useLocation } from "react-router-dom";
+import {
+  BsMusicNoteList,
+  BsHeart,
+  BsClock,
+  BsPersonCircle,
+  BsStars,
+} from "react-icons/bs";
+import spotify from "../../assets/spotify.png";
+import "./Sidebar.scss";
+const Sidebar = ({ show }) => {
+  const location = useLocation();
+
+  const navItems = [
+    { path: "/", icon: <BsStars />, label: "For You" },
+    { path: "/top-tracks", icon: <BsMusicNoteList />, label: "Top Tracks" },
+    { path: "/favorites", icon: <BsHeart />, label: "Favourites" },
+    { path: "/recently-played", icon: <BsClock />, label: "Recently Played" },
+  ];
+
+  return (
+    <div className={["sidebar", show && "show"].filter(Boolean).join(" ")}>
+      <div className="logo">
+        <img src={spotify} alt="Spotify" width={40} height={40} />
+        <h3>Spotify</h3>
+      </div>
+      <Nav className="flex-column">
+        {navItems.map((item) => (
+          <Nav.Item key={item.path}>
+            <Link
+              to={item.path}
+              className={`nav-link ${
+                location.pathname === item.path ? "active" : ""
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </Link>
+          </Nav.Item>
+        ))}
+      </Nav>
+      <div className="profile-section">
+        <div className="profile-image">
+          <BsPersonCircle />
+        </div>
+        <div className="profile-info">
+          <h4>Avinash</h4>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
