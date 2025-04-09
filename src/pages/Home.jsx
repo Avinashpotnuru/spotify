@@ -1,69 +1,84 @@
 /* eslint-disable react/prop-types */
-import  { useState, useEffect } from 'react';
-import { BsThreeDotsVertical , BsSearch } from 'react-icons/bs';
-import { songs } from '../data/songs';
+import { useState, useEffect, useMemo } from "react";
+import { BsSearch } from "react-icons/bs";
+import { songs } from "../data/songs";
+import SongItem from "../components/SongItem/SongItem";
 
 const TopTracks = ({ setCurrentSong }) => {
   const [allSongs, setAllSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   useEffect(() => {
     setAllSongs(songs);
   }, []);
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
   const handlePlay = (song) => {
     setCurrentSong(song);
-    const recentlyPlayed = JSON.parse(sessionStorage.getItem('recentlyPlayed') || '[]');
+    let recentlyPlayed = [];
+    try {
+      recentlyPlayed = JSON.parse(
+        localStorage.getItem("recentlyPlayed") || "[]"
+      );
+    } catch (error) {
+      console.error("Failed to parse recently played songs:", error);
+    }
     const updatedRecent = [
       song,
-      ...recentlyPlayed.filter(track => track.id !== song.id)
+      ...recentlyPlayed.filter((track) => track.id !== song.id),
     ].slice(0, 10);
-    sessionStorage.setItem('recentlyPlayed', JSON.stringify(updatedRecent));
+    localStorage.setItem("recentlyPlayed", JSON.stringify(updatedRecent));
   };
 
   const handleRemoveTrack = (song) => {
     alert(`Feature to remove ${song.title} will be implemented here.`);
   };
 
-  const filteredSongs = allSongs.filter(song => 
-    song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    song.artist.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSongs = useMemo(
+    () =>
+      allSongs.filter(
+        (song) =>
+          song.title
+            .toLowerCase()
+            .includes(debouncedSearchTerm.toLowerCase()) ||
+          song.artist.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      ),
+    [allSongs, debouncedSearchTerm]
   );
 
   return (
-    <div className="top-tracks">
+    <div className="favorites">
       <h2>For You</h2>
       <div className="search-bar">
-  <div className="search-input-container">
-    <input 
-      type="text" 
-      placeholder="Search tracks..." 
-      value={searchTerm} 
-      onChange={(e) => setSearchTerm(e.target.value)} 
-      className="search-input"
-    />
-    <BsSearch className="search-icon" />
-  </div>
-</div>
+        <div className="search-input-container">
+          <input
+            type="text"
+            placeholder="Search tracks..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <BsSearch className="search-icon" />
+        </div>
+      </div>
       <div className="songs-list">
-        {filteredSongs.map(song => (
-          <div key={song.id} className="song-item" onClick={() => handlePlay(song)}>
-            <img src={song.cover} alt={song.title} className="cover" />
-            <div className="details">
-              <h4>{song.title}</h4>
-              <p>{song.artist}</p>
-            </div>
-            <span className="duration">{song.duration}</span>
-            <button 
-              className="more-options"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemoveTrack(song);
-              }}
-            >
-              <BsThreeDotsVertical />
-            </button>
-          </div>
+        {filteredSongs.map((song) => (
+          <SongItem
+            key={song.id}
+            song={song}
+            onPlay={handlePlay}
+            removeFavorite={handleRemoveTrack}
+          />
         ))}
       </div>
     </div>

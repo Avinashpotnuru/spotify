@@ -1,44 +1,63 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar/Sidebar';
-import Player from './components/Player/Player';
-import Home from './pages/Home';
-import Favorites from './pages/Favorites';
-import RecentlyPlayed from './pages/RecentlyPlayed';
-import { songs } from './data/songs'; // Assuming songs is an array of song objects
-import './styles/App.scss';
-import TopTracks from './pages/TopTracks';
+import { useState, useEffect, useCallback } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Player from "./components/Player/Player";
+import Home from "./pages/Home";
+import Favorites from "./pages/Favorites";
+import RecentlyPlayed from "./pages/RecentlyPlayed";
+import { songs } from "./data/songs"; // Assuming songs is an array of song objects
+import "./styles/App.scss";
+import TopTracks from "./pages/TopTracks";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(songs[0]);
-  const [currentIndex, setCurrentIndex] = useState(0);  // Track the current song index
+  const [currentIndex, setCurrentIndex] = useState(0); // Track the current song index
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPlayer, setShowPlayer] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+    const debounce = (func, delay) => {
+      let timeoutId;
+      return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+      };
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const handleResize = debounce(() => {
+      setIsMobile(window.innerWidth <= 768);
+    }, 300);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleToggleView = () => {
+  const handleToggleView = useCallback(() => {
     if (isMobile) {
       setShowPlayer(!showPlayer);
     }
-  };
+  }, [isMobile, showPlayer]);
 
-  const playNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % songs.length);
-    setCurrentSong(songs[(currentIndex + 1) % songs.length]);
-  };
+  const playNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => {
+      const newIndex = (prevIndex + 1) % songs.length;
+      setCurrentSong(songs[newIndex]);
+      return newIndex;
+    });
+  }, [currentIndex]);
 
-  const playPrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? songs.length - 1 : prevIndex - 1));
-    setCurrentSong(songs[(currentIndex === 0 ? songs.length : currentIndex) - 1]);
+  const playPrevious = useCallback(() => {
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex === 0 ? songs.length - 1 : prevIndex - 1;
+      setCurrentSong(songs[newIndex]);
+      return newIndex;
+    });
+  }, [currentIndex]);
+
+  const handleSetCurrentSong = (song) => {
+    setCurrentSong(song);
+    if (isMobile) setShowPlayer(true);
   };
 
   return (
@@ -55,46 +74,20 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={
-                  <Home
-                    setCurrentSong={(song) => {
-                      setCurrentSong(song);
-                      if (isMobile) setShowPlayer(true);
-                    }}
-                  />
-                }
+                element={<Home setCurrentSong={handleSetCurrentSong} />}
               />
               <Route
                 path="/top-tracks"
-                element={
-                  <TopTracks
-                    setCurrentSong={(song) => {
-                      setCurrentSong(song);
-                      if (isMobile) setShowPlayer(true);
-                    }}
-                  />
-                }
+                element={<TopTracks setCurrentSong={handleSetCurrentSong} />}
               />
               <Route
                 path="/favorites"
-                element={
-                  <Favorites
-                    setCurrentSong={(song) => {
-                      setCurrentSong(song);
-                      if (isMobile) setShowPlayer(true);
-                    }}
-                  />
-                }
+                element={<Favorites setCurrentSong={handleSetCurrentSong} />}
               />
               <Route
                 path="/recently-played"
                 element={
-                  <RecentlyPlayed
-                    setCurrentSong={(song) => {
-                      setCurrentSong(song);
-                      if (isMobile) setShowPlayer(true);
-                    }}
-                  />
+                  <RecentlyPlayed setCurrentSong={handleSetCurrentSong} />
                 }
               />
             </Routes>
