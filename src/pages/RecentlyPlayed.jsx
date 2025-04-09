@@ -5,6 +5,7 @@ import SongItem from "../components/SongItem/SongItem";
 
 const TopTracks = ({ setCurrentSong }) => {
   const [allSongs, setAllSongs] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 

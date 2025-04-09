@@ -5,13 +5,15 @@ import {
   BsPauseFill,
   BsSkipBackwardFill,
   BsSkipForwardFill,
-  BsThreeDotsVertical,
   BsVolumeUp,
   BsChevronLeft,
   BsList,
+  BsHeart,
+  BsHeartFill,
 } from "react-icons/bs";
+
 import { getImageColors } from "../../utils/colorUtils";
-import "./Player.scss"
+import "./Player.scss";
 
 const Player = ({
   song,
@@ -21,14 +23,22 @@ const Player = ({
   playNext,
   playPrevious,
 }) => {
-  // Create a reference to the audio element
   const audioRef = useRef(null);
-  // Create state variables to store the progress, current time, and duration of the song
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  // Function to add a song to the user's favorites
+  //  Sync favorite icon state when song changes
+  useEffect(() => {
+    const storedFavorites = JSON.parse(
+      localStorage.getItem("favorites") || "[]"
+    );
+    const isFav = storedFavorites.some((fav) => fav.id === song.id);
+    setIsFavorite(isFav);
+  }, [song]);
+
+  //  Toggle favorite logic
   const handleAddToFavorites = useCallback(() => {
     let storedFavorites = [];
     try {
@@ -36,22 +46,27 @@ const Player = ({
     } catch (error) {
       console.error("Error accessing local storage:", error);
     }
+
     const isAlreadyFavorite = storedFavorites.some((fav) => fav.id === song.id);
+    let updatedFavorites;
 
     if (!isAlreadyFavorite) {
-      const updatedFavorites = [...storedFavorites, song];
-      try {
-        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-      } catch (error) {
-        console.error("Error saving to local storage:", error);
-      }
+      updatedFavorites = [...storedFavorites, song];
       alert(`${song?.title} has been added to your favorites.`);
     } else {
-      alert(`${song?.title} is already in your favorites.`);
+      updatedFavorites = storedFavorites.filter((fav) => fav.id !== song.id);
+      alert(`${song?.title} has been removed from your favorites.`);
+    }
+
+    try {
+      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      setIsFavorite(!isAlreadyFavorite); // ✅ toggle UI icon
+    } catch (error) {
+      console.error("Error saving to local storage:", error);
     }
   }, [song]);
 
-  // UseEffect to update the background colors based on the song's cover art
+  // Extract colors from song cover
   useEffect(() => {
     if (song?.cover) {
       const img = new Image();
@@ -76,18 +91,13 @@ const Player = ({
     }
   }, [song]);
 
-  // UseEffect to play or pause the audio based on the isPlaying state
+ 
   useEffect(() => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
+      isPlaying ? audioRef.current.play() : audioRef.current.pause();
     }
   }, [isPlaying, song]);
 
-  // Function to update the progress, current time, and duration of the song
   const handleTimeUpdate = useCallback(() => {
     const current = audioRef.current.currentTime;
     const duration = audioRef.current.duration;
@@ -96,7 +106,6 @@ const Player = ({
     setProgress((current / duration) * 100);
   }, []);
 
-  // Function to seek to a specific time in the song
   const handleProgressClick = useCallback(
     (e) => {
       const progressBar = e.currentTarget;
@@ -110,7 +119,7 @@ const Player = ({
         setProgress((newTime / audioRef.current.duration) * 100);
         setCurrentTime(newTime);
 
-        // Resume playing after seek
+        // Resume playing
         audioRef.current.play();
         setIsPlaying(true);
       }
@@ -118,11 +127,11 @@ const Player = ({
     [setIsPlaying]
   );
 
-  // Format a time in seconds to MM:SS
   const formatTime = (seconds) => {
-    const minutes = seconds / 60 | 0;
-    const remainingSeconds = (seconds % 60) | 0;
+    if (!seconds || isNaN(seconds)) return "00:00";
 
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
       .toString()
       .padStart(2, "0")}`;
@@ -144,6 +153,7 @@ const Player = ({
           </button>
         </div>
       </div>
+
       <div className="player-content">
         <div className="cover-art">
           <img src={song.cover} alt={song.title} />
@@ -154,7 +164,6 @@ const Player = ({
         <div className="progress-container">
           <div className="time-info">
             <span>{formatTime(currentTime)}</span>
-
             <span>{formatTime(duration)}</span>
           </div>
           <div className="progress-bar" onClick={handleProgressClick}>
@@ -164,7 +173,7 @@ const Player = ({
 
         <div className="controls">
           <button className="control-btn more" onClick={handleAddToFavorites}>
-            <BsThreeDotsVertical />
+            {isFavorite ? <BsHeartFill color="red" /> : <BsHeart />}
           </button>
           <div className="controls-center">
             <button className="control-btn" onClick={playPrevious}>

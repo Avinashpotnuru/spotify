@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { BsThreeDotsVertical, BsSearch } from "react-icons/bs";
+import {  BsSearch } from "react-icons/bs";
 import { songs } from "../data/songs";
+import SongItem from "../components/SongItem/SongItem";
 
 const TopTracks = ({ setCurrentSong }) => {
   const [allSongs, setAllSongs] = useState([]);
@@ -67,27 +68,12 @@ const TopTracks = ({ setCurrentSong }) => {
 
       <div className="songs-list">
         {filteredSongs.map((song) => (
-          <div
+          <SongItem
             key={song.id}
-            className="song-item"
-            onClick={() => handlePlay(song)}
-          >
-            <img src={song.cover} alt={song.title} className="cover" />
-            <div className="details">
-              <h4>{song.title}</h4>
-              <p>{song.artist}</p>
-            </div>
-            <span className="duration">{song.duration}</span>
-            <button
-              className="more-options"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemoveTrack(song);
-              }}
-            >
-              <BsThreeDotsVertical />
-            </button>
-          </div>
+            song={song}
+            onPlay={handlePlay}
+            removeFavorite={handleRemoveTrack}
+          />
         ))}
       </div>
     </div>

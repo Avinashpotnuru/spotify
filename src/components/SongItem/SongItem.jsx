@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-
-const SongItem = ({ song, onPlay, onFavorite }) => (
+const SongItem = ({ song, onPlay, removeFavorite }) => {
+  return (
     <div key={song.id} className="song-item" onClick={() => onPlay(song)}>
       <img src={song.cover} alt={song.title} className="cover" />
       <div className="details">
@@ -14,12 +14,14 @@ const SongItem = ({ song, onPlay, onFavorite }) => (
         className="more-options"
         onClick={(e) => {
           e.stopPropagation();
-          onFavorite(song);
+          // onFavorite(song);
+          removeFavorite(song);
         }}
       >
         <BsThreeDotsVertical />
       </button>
     </div>
   );
+};
 
-  export default SongItem
+export default SongItem;
