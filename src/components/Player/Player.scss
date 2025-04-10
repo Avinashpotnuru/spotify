@@ -30,6 +30,12 @@
       position: relative;
       gap: 6rem;
       z-index: 2;
+
+      @media (max-width: 400px) {
+        flex-grow: 1;
+        gap: 1rem !important;
+      }
+      
       @media (max-width: 768px) {
          gap: 2rem;
       }
@@ -59,9 +65,13 @@
       }
     }
     .song-title {
+      
       text-align: start;
       flex: 1;
-
+  @media (max-width: 400px) {
+         text-align: center;
+        }
+      
       h1 {
         font-size: 1.2rem;
         margin: 0;

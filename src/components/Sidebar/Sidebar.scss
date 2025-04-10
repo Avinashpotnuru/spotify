@@ -16,16 +16,6 @@
     border-bottom: 1px solid #282828;
     padding: 10px;
     height: auto;
-
-    .nav {
-      display: flex;
-      overflow-x: auto;
-      padding-bottom: 10px;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
   }
 
   .logo {
@@ -48,7 +38,22 @@
       }
     }
   }
+  .nav {
+    display: flex;
 
+    overflow-x: auto;
+    padding-bottom: 10px;
+    justify-content: space-between;
+    
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      
+      display: flex;
+    }
+  }
   .nav-link {
     color: #b3b3b3;
     display: flex;

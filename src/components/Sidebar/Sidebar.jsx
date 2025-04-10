@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Nav } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BsMusicNoteList,
   BsHeart,
@@ -12,6 +12,7 @@ import spotify from "../../assets/spotify.png";
 import "./Sidebar.scss";
 const Sidebar = ({ show }) => {
   const location = useLocation();
+    const navigate = useNavigate();
 
   const navItems = [
     { path: "/", icon: <BsStars />, label: "For You" },
@@ -22,11 +23,11 @@ const Sidebar = ({ show }) => {
 
   return (
     <div className={["sidebar", show && "show"].filter(Boolean).join(" ")}>
-      <div className="logo">
+      <div onClick={() => navigate("/")} className="logo">
         <img src={spotify} alt="Spotify" width={40} height={40} />
         <h3>Spotify</h3>
       </div>
-      <Nav className="flex-column">
+      <Nav className="">
         {navItems.map((item) => (
           <Nav.Item key={item.path}>
             <Link

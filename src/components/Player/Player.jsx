@@ -11,8 +11,8 @@ import {
   BsHeart,
   BsHeartFill,
 } from "react-icons/bs";
-
 import { getImageColors } from "../../utils/colorUtils";
+import { toast } from "react-toastify";
 import "./Player.scss";
 
 const Player = ({
@@ -52,10 +52,11 @@ const Player = ({
 
     if (!isAlreadyFavorite) {
       updatedFavorites = [...storedFavorites, song];
-      alert(`${song?.title} has been added to your favorites.`);
+      toast.success(`${song?.title} has been added to your favorites.`);
     } else {
       updatedFavorites = storedFavorites.filter((fav) => fav.id !== song.id);
-      alert(`${song?.title} has been removed from your favorites.`);
+
+      toast(`${song?.title} has been removed from your favorites.`);
     }
 
     try {
@@ -91,7 +92,6 @@ const Player = ({
     }
   }, [song]);
 
- 
   useEffect(() => {
     if (audioRef.current) {
       isPlaying ? audioRef.current.play() : audioRef.current.pause();

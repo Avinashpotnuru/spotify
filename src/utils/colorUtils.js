@@ -1,7 +1,7 @@
 export const getAverageColor = async (imageUrl) => {
   if (!isValidUrl(imageUrl)) {
     throw new Error("Invalid URL");
-  }
+  }           
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";

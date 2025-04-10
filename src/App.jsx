@@ -8,6 +8,7 @@ import RecentlyPlayed from "./pages/RecentlyPlayed";
 import { songs } from "./data/songs"; // Assuming songs is an array of song objects
 import "./styles/App.scss";
 import TopTracks from "./pages/TopTracks";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(songs[0]);
@@ -61,54 +62,69 @@ function App() {
   };
 
   return (
-    <Router>
-      <div
-        className={["app", showPlayer && "player-visible"]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        {/* <div className="app-background"></div> */}
-        <div className="left-section">
-          <Sidebar />
-          <div className="main-content">
-            <Routes>
-              <Route
-                path="/"
-                element={<Home setCurrentSong={handleSetCurrentSong} />}
-              />
-              <Route
-                path="/top-tracks"
-                element={<TopTracks setCurrentSong={handleSetCurrentSong} />}
-              />
-              <Route
-                path="/favorites"
-                element={<Favorites setCurrentSong={handleSetCurrentSong} />}
-              />
-              <Route
-                path="/recently-played"
-                element={
-                  <RecentlyPlayed setCurrentSong={handleSetCurrentSong} />
-                }
-              />
-            </Routes>
-          </div>
-        </div>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        
+      />
+      <Router>
         <div
-          className={["right-section", showPlayer && "visible"]
+          className={["app", showPlayer && "player-visible"]
             .filter(Boolean)
             .join(" ")}
         >
-          <Player
-            song={currentSong}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            onToggleSidebar={handleToggleView}
-            playNext={playNext}
-            playPrevious={playPrevious}
-          />
+          {/* <div className="app-background"></div> */}
+          <div className="left-section">
+            <Sidebar />
+            <div className="main-content">
+              <Routes>
+                <Route
+                  path="/"
+                  element={<Home setCurrentSong={handleSetCurrentSong} />}
+                />
+                <Route
+                  path="/top-tracks"
+                  element={<TopTracks setCurrentSong={handleSetCurrentSong} />}
+                />
+                <Route
+                  path="/favorites"
+                  element={<Favorites setCurrentSong={handleSetCurrentSong} />}
+                />
+                <Route
+                  path="/recently-played"
+                  element={
+                    <RecentlyPlayed setCurrentSong={handleSetCurrentSong} />
+                  }
+                />
+              </Routes>
+            </div>
+          </div>
+          <div
+            className={["right-section", showPlayer && "visible"]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            <Player
+              song={currentSong}
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+              onToggleSidebar={handleToggleView}
+              playNext={playNext}
+              playPrevious={playPrevious}
+            />
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </>
   );
 }
 

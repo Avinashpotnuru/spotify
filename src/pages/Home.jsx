@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { BsSearch } from "react-icons/bs";
 import { songs } from "../data/songs";
 import SongItem from "../components/SongItem/SongItem";
+import { toast } from "react-toastify";
 
 const TopTracks = ({ setCurrentSong }) => {
   const [allSongs, setAllSongs] = useState([]);
@@ -41,7 +42,7 @@ const TopTracks = ({ setCurrentSong }) => {
   };
 
   const handleRemoveTrack = (song) => {
-    alert(`Feature to remove ${song.title} will be implemented here.`);
+    toast.success(`Feature to remove ${song.title} will be implemented here.`);
   };
 
   const filteredSongs = useMemo(

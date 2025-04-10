@@ -2,11 +2,12 @@
 import { useState, useEffect } from "react";
 import SongItem from "../components/SongItem/SongItem";
 import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Favorites = ({ setCurrentSong }) => {
   const [favorites, setFavorites] = useState([]);
-  const loaction = useLocation();
-  const pageName = loaction.pathname.split("/")[1];
+  const location = useLocation();
+  const pageName = location.pathname.split("/")[1];
 
   useEffect(() => {
     const storedFavorites = JSON.parse(
@@ -19,6 +20,8 @@ const Favorites = ({ setCurrentSong }) => {
     const updatedFavorites = favorites.filter((fav) => fav.id !== song.id);
     setFavorites(updatedFavorites);
     localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    toast.success(`${song.title} removed from favorites!`);
+
   };
 
   const handlePlay = (song) => {
