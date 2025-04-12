@@ -12,7 +12,7 @@ import { ToastContainer } from "react-toastify";
 
 function App() {
   const [currentSong, setCurrentSong] = useState(songs[0]);
-  const [currentIndex, setCurrentIndex] = useState(0); // Track the current song index
+  const [, setCurrentIndex] = useState(0); // Track the current song index
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPlayer, setShowPlayer] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -46,7 +46,7 @@ function App() {
       setCurrentSong(songs[newIndex]);
       return newIndex;
     });
-  }, [currentIndex]);
+  }, []);
 
   const playPrevious = useCallback(() => {
     setCurrentIndex((prevIndex) => {
@@ -54,7 +54,7 @@ function App() {
       setCurrentSong(songs[newIndex]);
       return newIndex;
     });
-  }, [currentIndex]);
+  }, []);
 
   const handleSetCurrentSong = (song) => {
     setCurrentSong(song);
