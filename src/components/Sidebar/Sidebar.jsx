@@ -5,7 +5,7 @@ import {
   BsMusicNoteList,
   BsHeart,
   BsClock,
-  BsPersonCircle,
+
   BsStars,
 } from "react-icons/bs";
 import spotify from "../../assets/spotify.png";
@@ -44,7 +44,7 @@ const Sidebar = ({ show }) => {
       </Nav>
       <div className="profile-section">
         <div className="profile-image">
-          <BsPersonCircle />
+          <img src="/myLogo.jpg" alt="Profile"  /> 
         </div>
         <div className="profile-info">
           <h4>Avinash</h4>
